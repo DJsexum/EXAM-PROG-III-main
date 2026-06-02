@@ -4,8 +4,6 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaService } from '../prisma/prisma.service';
 import { hashSync } from 'bcrypt';
 
-
-
 @Injectable()
 export class UsersService {
   constructor(private prismaService: PrismaService) { }
@@ -28,7 +26,7 @@ export class UsersService {
           ...createUserDto,
           password: hashSync(createUserDto.password, 10),
         }
-      })
+      });
     } catch (error) {
       console.log(error);
       throw error;
@@ -37,7 +35,11 @@ export class UsersService {
 
   async findAll() {
     try {
-      return await this.prismaService.user.findMany();
+      return await this.prismaService.user.findMany({
+        orderBy: {
+          fullName: 'asc',
+        },
+      });
     } catch (error) {
       console.log(error);
       throw error;
@@ -46,11 +48,17 @@ export class UsersService {
 
   async findOne(id: number) {
     try {
-      return await this.prismaService.user.findUnique({
+      const user = await this.prismaService.user.findUnique({
         where: {
           id,
         }
-      })
+      });
+
+      if (!user) {
+        throw new NotFoundException('Usuario no encontrado');
+      }
+
+      return user;
     } catch (error) {
       console.log(error);
       throw error;
@@ -58,27 +66,27 @@ export class UsersService {
   }
 
   async update(id: number, updateUserDto: UpdateUserDto) {
-    const user = await this.findOne(id);
+    const user = await this.prismaService.user.findUnique({
+      where: {
+        id,
+      }
+    });
 
-    console.log(user);
-
-    console.log(updateUserDto);
-
+    if (!user) {
+      throw new NotFoundException('Usuario no encontrado');
+    }
 
     try {
-      if (!user) {
-        throw new NotFoundException('Usuario no encontrado');
-      }
+      if (updateUserDto.email) {
+        const existingUser = await this.prismaService.user.findUnique({
+          where: {
+            email: updateUserDto.email,
+          }
+        });
 
-      // Validar el correo electrónico
-      const existingUser = await this.prismaService.user.findUnique({
-        where: {
-          email: updateUserDto.email,
+        if (existingUser && existingUser.id !== id) {
+          throw new ConflictException('El correo electrónico ya está en uso');
         }
-      });
-
-      if (existingUser && existingUser.id !== id) {
-        throw new ConflictException('El correo electrónico ya está en uso');
       }
 
       return await this.prismaService.user.update({
@@ -88,7 +96,7 @@ export class UsersService {
         data: {
           ...updateUserDto,
         }
-      })
+      });
     } catch (error) {
       console.log(error);
       throw error;
@@ -97,11 +105,13 @@ export class UsersService {
 
   async remove(id: number) {
     try {
-      return await this.prismaService.user.delete({
+      const deleted = await this.prismaService.user.delete({
         where: {
           id,
         }
-      })
+      });
+
+      return deleted;
     } catch (error) {
       console.log(error);
       throw error;

@@ -41,6 +41,7 @@
 
                 <div class="p-2 flex justify-end gap-2 mt-3">
                     <button
+                        type="button"
                         class="bg-red-400 text-white px-4 py-2 rounded-md"
                         onclick={() => (userModel.editDialog = false)}
                     >

@@ -2,7 +2,7 @@ import { IsEmail, IsString, Length, MinLength } from "class-validator"
 
 export class CreateUserDto {
     @IsString({ message: 'El nombre debe ser texto' })
-    @Length(6, 255, { message: 'El nombre debe tener entre 6 y 255 caracteres' })
+    @Length(1, 255, { message: 'El nombre debe tener entre 1 y 255 caracteres' })
     fullName!: string
 
     @IsEmail({}, { message: 'El correo electrónico debe ser válido' })
