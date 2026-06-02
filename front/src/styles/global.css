@@ -1,0 +1,7 @@
+@import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
+
+
+/* .close {
+    @apply absolute top-2 right-2 text-lg font-bold cursor-pointer;
+} */
