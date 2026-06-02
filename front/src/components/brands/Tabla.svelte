@@ -6,6 +6,7 @@
     import { brandsModel } from "./brand.svelte";
     import { onMount } from "svelte";
 
+
     onMount(async () => 
     {
         await brandsModel.getBrands();

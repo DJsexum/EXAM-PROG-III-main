@@ -14,4 +14,9 @@ export const ROUTES = [
         name: "Usuarios",
         public: false
     },
+    {
+    path: '/brand',
+    name: 'Marcas',
+    public: false
+    },
 ]
