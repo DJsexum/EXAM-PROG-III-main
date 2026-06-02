@@ -34,6 +34,7 @@
         <tr>
                 <th class="bg-gray-800 text-white text-left p-2">Nombre</th>
                 <th class="bg-gray-800 text-white p-2">Acciones</th>
+    </tr> 
 
     </thead>
 
